@@ -307,4 +307,7 @@
     <!-- Names of the key handler classes -->
     <string name="config_deviceKeyHandlerClass" translatable="false">org.lineageos.settings.device.KeyHandler</string>
 
+    <!--  Whether to show navbar in lock task mode -->
+    <bool name="config_showNavbarInLockTaskMode">true</bool>
+
 </resources>
