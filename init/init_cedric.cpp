@@ -68,6 +68,11 @@ void vendor_load_properties()
         return;
 
     std::string sku = android::base::GetProperty("ro.boot.hardware.sku", "");
+
+    // fingerprint
+    property_override("ro.build.description", "cedric-7.0/NPPS25.137-72-4/4:user/release-keys");
+    property_override("ro.build.fingerprint", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys"); // safetynet hax
+
     property_set("ro.product.model", sku.c_str());
 
     // rmt_storage
