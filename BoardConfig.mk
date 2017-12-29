@@ -22,7 +22,8 @@ TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
 
 BOARD_VENDOR := motorola-qcom
 
-WITH_DEXPREOPT := true
+# Dexpreopt
+WITH_DEXPREOPT ?= true
 DONT_DEXPREOPT_PREBUILTS := true
 
 # AIDs and CAPS
