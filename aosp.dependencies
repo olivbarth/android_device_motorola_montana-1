@@ -1,0 +1,10 @@
+[
+  {
+    "repository":  "vendor_motorola_cedric",
+    "target_path": "vendor/motorola/cedric"
+  },
+  {
+    "repository":  "kernel_motorola_msm8937",
+    "target_path": "kernel/motorola/msm8937"
+  }
+]
