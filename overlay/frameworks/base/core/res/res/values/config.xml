@@ -305,10 +305,10 @@
     <bool name="config_proximityCheckOnWakeEnabledByDefault">true</bool>
 
     <!-- Paths to the libraries that contain device specific key handlers -->
-    <string name="config_deviceKeyHandlerLib" translatable="false">/system/priv-app/LineageActions/LineageActions.apk</string>
+    <string name="config_deviceKeyHandlerLib" translatable="false">/system/priv-app/MotoActions/MotoActions.apk</string>
 
     <!-- Names of the key handler classes -->
-    <string name="config_deviceKeyHandlerClass" translatable="false">org.lineageos.settings.device.KeyHandler</string>
+    <string name="config_deviceKeyHandlerClass" translatable="false">com.moto.actions.KeyHandler</string>
 
     <!--  Whether to show navbar in lock task mode -->
     <bool name="config_showNavbarInLockTaskMode">true</bool>
