@@ -25,6 +25,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+import init.omni.rc
 import /system/vendor/etc/init/hw/init.mmi.rc
 
 on early-init
