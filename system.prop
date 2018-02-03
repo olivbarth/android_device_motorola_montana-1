@@ -2,8 +2,10 @@
 # system.prop for cedric
 #
 
-# Android Run Time
-ro.sys.fw.dex2oat_thread_count=4
+# dex2oat
+dalvik.vm.boot-dex2oat-threads=8
+dalvik.vm.dex2oat-threads=8
+dalvik.vm.image-dex2oat-threads=8
 
 # Audio
 audio.deep_buffer.media=true
