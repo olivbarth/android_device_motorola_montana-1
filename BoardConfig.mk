@@ -25,7 +25,9 @@ BOARD_VENDOR := motorola-qcom
 WITH_DEXPREOPT := true
 
 # AIDs and CAPS
-TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/config.fs
+TARGET_FS_CONFIG_GEN := \
+    $(DEVICE_PATH)/fs_config/mot_aids.txt \
+    $(DEVICE_PATH)/fs_config/file_caps.txt
 
 # Platform
 TARGET_BOARD_PLATFORM := msm8937
