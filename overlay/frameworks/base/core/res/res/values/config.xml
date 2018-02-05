@@ -310,12 +310,6 @@
     <!-- Names of the key handler classes -->
     <string name="config_deviceKeyHandlerClass" translatable="false">com.moto.actions.KeyHandler</string>
 
-    <!--  Whether to show navbar in lock task mode -->
-    <bool name="config_showNavbarInLockTaskMode">true</bool>
-
-    <!-- Whether to show navbar when fingerprint sensor is busy -->
-    <bool name="config_showNavbarWhenFingerprintSensorBusy">true</bool>
-
     <!-- Default files to pin via Pinner Service -->
     <string-array translatable="false" name="config_defaultPinnerServiceFiles">
         <item>"/system/framework/arm64/boot-framework.oat"</item>
