@@ -58,7 +58,7 @@ public class MotoActionsService extends IntentService implements ScreenStateNoti
                         new LinkedList<UpdatedStateNotifier>();
 
     public MotoActionsService(Context context) {
-        super("MotoActionservice");
+        super("MotoActionService");
         mContext = context;
 
         Log.d(TAG, "Starting");

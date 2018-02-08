@@ -59,6 +59,7 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
+import android.widget.Toast;
 
 import com.android.internal.os.DeviceKeyHandler;
 import com.android.internal.util.ArrayUtils;
@@ -148,7 +149,7 @@ public class KeyHandler implements DeviceKeyHandler {
                 "GestureWakeLock");
 
         final Resources resources = mContext.getResources();
-        mProximityTimeOut = resources.getInteger(
+        /*mProximityTimeOut = resources.getInteger(
                 com.android.internal.R.integer.config_proximityCheckTimeout);
         mProximityWakeSupported = resources.getBoolean(
                 com.android.internal.R.bool.config_proximityCheckOnWake);
@@ -158,7 +159,7 @@ public class KeyHandler implements DeviceKeyHandler {
             mProximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
             mProximityWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     "ProximityWakeLock");
-        }
+        }*/
 
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (mVibrator == null || !mVibrator.hasVibrator()) {
@@ -477,13 +478,19 @@ public class KeyHandler implements DeviceKeyHandler {
 
         boolean isScreenOn = mPowerManager.isScreenOn();
 
-        // We only want ACTION_DOWN event
+        // We only want ACTION_UP event
         if (event.getAction() != KeyEvent.ACTION_UP) {
             return true;
         }
-        
-        if (isFPScanCode && fpGesturePending) {
-            return true;
+
+        if (isFPScanCode){
+            if (fpGesturePending) {
+                return false;
+            } else {
+                resetFPGestureDelay();
+                fpGesturePending = true;
+                mHandler.postDelayed(fpGestureRunnable, 10);
+            }
         }
 
         if (scanCode != FP_TAP_SCANCODE) {
@@ -493,20 +500,54 @@ public class KeyHandler implements DeviceKeyHandler {
         if (isFPScanCode) {
             if ((!isFPGestureEnabled) || (!isScreenOn && !isFPGestureEnabledOnScreenOff)) {
                 resetDoubleTapOnFP();
-            }else if (!isScreenOn && isFPGestureEnabledOnScreenOff) {
+                return false;
+            }
+            if (!isScreenOn && isFPGestureEnabledOnScreenOff) {
                 processFPScreenOffScancode(scanCode);
             } else {
                 processFPScancode(scanCode);
-            }
-            if (!fpGesturePending) {
-                resetFPGestureDelay();
-                fpGesturePending = true;
-                mHandler.postDelayed(fpGestureRunnable, 10);
             }
         } else if (isScreenOffGesturesScanCode) {
             handleScreenOffScancode(scanCode);
         }
         return true;
+    }
+    
+    public boolean canHandleKeyEvent(KeyEvent event) {
+        int scanCode = event.getScanCode();
+
+        if (DEBUG) {
+            Log.d(TAG, "DEBUG: action=" + event.getAction()
+                    + ", flags=" + event.getFlags()
+                    + ", keyCode=" + event.getKeyCode()
+                    + ", scanCode=" + event.getScanCode()
+                    + ", metaState=" + event.getMetaState()
+                    + ", repeatCount=" + event.getRepeatCount());
+        }
+
+        boolean isFPScanCode = ArrayUtils.contains(sSupportedFPGestures, scanCode);
+        boolean isScreenOffGesturesScanCode = ArrayUtils.contains(sSupportedScreenOffGestures, scanCode);
+        if (!isFPScanCode && !isScreenOffGesturesScanCode) {
+            return false;
+        }
+        
+        return true;
+    }    
+
+    public boolean isCameraLaunchEvent(KeyEvent event) {
+        return false;
+    }
+
+    public boolean isWakeEvent(KeyEvent event){
+        return false;
+    }
+
+    public boolean isDisabledKeyEvent(KeyEvent event) {
+        return false;
+    }
+
+    public Intent isActivityLaunchEvent(KeyEvent event) {
+        return null;
     }
 
     private void processFPScancode(int scanCode) {
@@ -597,6 +638,11 @@ public class KeyHandler implements DeviceKeyHandler {
             case ACTION_SCREENSHOT:
                 triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_SYSRQ);
                 break;
+            case ACTION_PIP:
+                if (!mKeyguardManager.inKeyguardRestrictedInputMode()) {
+                    goToPipMode();
+                }
+                break;
             case ACTION_LAST_APP:
                 if (!mKeyguardManager.inKeyguardRestrictedInputMode()) {
                     switchToLastApp(mContext);
@@ -610,6 +656,26 @@ public class KeyHandler implements DeviceKeyHandler {
             return;
         }
         mVibrator.vibrate(intensity);
+    }
+
+    private void goToPipMode() {
+        ActivityInfo ai = getRunningActivityInfo(mContext);
+        if (ai != null && !ai.supportsPictureInPicture()) {
+            try {
+                PackageManager pm = mContext.getPackageManager();
+                Resources resources = pm.getResourcesForApplication("com.moto.actions");
+                int resId = resources.getIdentifier("app_does_not_support_pip", "string", "com.moto.actions");
+                final String text = resources.getString(resId);
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+            }
+            return;
+        }
+        triggerVirtualKeypress(mHandler, 171);
     }
 
     private void toggleScreenState() {
@@ -672,10 +738,8 @@ public class KeyHandler implements DeviceKeyHandler {
         if (isProximityEnabledOnScreenOffGesturesFP() && !mFPScreenOffGesturesHandler.hasMessages(FP_ACTION_REQUEST)) {
             Message msg = mFPScreenOffGesturesHandler.obtainMessage(FP_ACTION_REQUEST);
             msg.arg1 = scanCode;
-            boolean defaultProximity = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_proximityCheckOnWakeEnabledByDefault);
-            boolean proximityWakeCheckEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROXIMITY_ON_WAKE, defaultProximity ? 1 : 0) == 1;
+            boolean defaultProximity = false;
+            boolean proximityWakeCheckEnabled = false;
             if (mProximityWakeSupported && proximityWakeCheckEnabled && mProximitySensor != null) {
                 mFPScreenOffGesturesHandler.sendMessageDelayed(msg, mProximityTimeOut);
                 registerFPScreenOffListener(scanCode);
@@ -735,10 +799,8 @@ public class KeyHandler implements DeviceKeyHandler {
         if (isProximityEnabledOnScreenOffGestures() && !mScreenOffGesturesHandler.hasMessages(GESTURE_REQUEST)) {
             Message msg = mScreenOffGesturesHandler.obtainMessage(GESTURE_REQUEST);
             msg.arg1 = scanCode;
-            boolean defaultProximity = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_proximityCheckOnWakeEnabledByDefault);
-            boolean proximityWakeCheckEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PROXIMITY_ON_WAKE, defaultProximity ? 1 : 0) == 1;
+            boolean defaultProximity = false;
+            boolean proximityWakeCheckEnabled = false;
             if (mProximityWakeSupported && proximityWakeCheckEnabled && mProximitySensor != null) {
                 mScreenOffGesturesHandler.sendMessageDelayed(msg, mProximityTimeOut);
                 registerScreenOffGesturesListener(scanCode);
