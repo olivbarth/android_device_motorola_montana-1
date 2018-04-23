@@ -38,8 +38,13 @@ import org.lineageos.settings.device.actions.Constants;
 import static org.lineageos.settings.device.actions.Constants.FP_HOME_KEY;
 import static org.lineageos.settings.device.actions.Constants.FP_HOME_KEY_OFF;
 
+import org.lineageos.settings.device.utils.ProximityUtils;
+
 public class FPGestureSettingsFragment extends PreferenceFragment {
 
+    private SwitchPreference mFPScreenOffGesture;
+    private PreferenceCategory mFPScreenOffCategory;
+    private SwitchPreference mFPScreenOffProxCheck;
     private PreferenceCategory mFPScreenOnCategory;
 
     private TextView mSwitchBarText;
@@ -87,6 +92,17 @@ public class FPGestureSettingsFragment extends PreferenceFragment {
         prefEditor.putBoolean(FP_HOME_KEY, enabled);
         prefEditor.apply();
         mFPScreenOnCategory.setEnabled(enabled);
+        mFPScreenOffGesture.setEnabled(enabled);
+        mFPScreenOffCategory.setEnabled(enabled);
+        if(enabled){
+            boolean hasEnrolledFingerprints = hasEnrolledFingerprints();
+            mFPScreenOffGesture.setEnabled(!hasEnrolledFingerprints);
+            mFPScreenOffCategory.setEnabled(!hasEnrolledFingerprints);
+        }
+        if (!ProximityUtils.isProximityWakeEnabled(getActivity()) && mFPScreenOffProxCheck != null){
+            mFPScreenOffCategory.removePreference(mFPScreenOffProxCheck);
+            mFPScreenOffProxCheck = null;
+        }
     }
 
     private boolean isFPGestureEnabled(){
@@ -96,6 +112,9 @@ public class FPGestureSettingsFragment extends PreferenceFragment {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.fp_gesture_panel);
+        mFPScreenOffGesture = (SwitchPreference) findPreference(FP_HOME_KEY_OFF);
+        mFPScreenOffCategory = (PreferenceCategory) findPreference("fp_keys_scr_off");
+        mFPScreenOffProxCheck = (SwitchPreference) mFPScreenOffCategory.findPreference("fp_proximity_check_scr_off");
         mFPScreenOnCategory = (PreferenceCategory) findPreference("fp_keys_scr_on");
         updatePrefs(isFPGestureEnabled());
     }
