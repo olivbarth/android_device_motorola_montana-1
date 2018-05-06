@@ -221,6 +221,7 @@ TARGET_LD_SHIM_LIBS := \
     /system/lib/lib_motsensorlistener.so|libsensor.so \
     /system/lib/libjustshoot.so|libshims_camera.so \
     /system/vendor/lib/libHui.so|libshim_camera_hal.so \
+    /system/lib/hw/camera.vendor.msm8937.so|libshim_camera_hal.so \
     /system/vendor/lib64/libmdmcutback.so|libqsap_shim.so
 
 # Wifi
