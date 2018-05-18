@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 The CyanogenMod Project
+# Copyright (C) 2018 The Lineage Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-# Inherit from cedric device
-$(call inherit-product, device/motorola/cedric/device.mk)
+# Inherit from montana device
+$(call inherit-product, device/motorola/montana/montana.mk)
 
 # Device identifier. This must come after all inclusions
-PRODUCT_DEVICE := cedric
-PRODUCT_NAME := full_cedric
-PRODUCT_MODEL := Moto G5
+PRODUCT_DEVICE := montana
+PRODUCT_NAME := full_montana
+PRODUCT_MODEL := Moto G5S
 
 # for specific
-$(call inherit-product, vendor/motorola/cedric/cedric-vendor.mk)
+$(call inherit-product, vendor/motorola/montana/montana-vendor.mk)
