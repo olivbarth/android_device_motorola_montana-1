@@ -79,7 +79,7 @@ BOARD_DTBTOOL_ARGS := --force-v3 --motorola 1
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
-TARGET_KERNEL_CONFIG := cedric_defconfig
+TARGET_KERNEL_CONFIG := montana_defconfig
 TARGET_KERNEL_SOURCE := kernel/motorola/msm8937
 
 KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/aarch64/aarch64-linux-android-4.9/bin
@@ -157,8 +157,8 @@ TARGET_EXFAT_DRIVER := exfat
 BOARD_HAVE_QCOM_FM := true
 
 # Init
-TARGET_INIT_VENDOR_LIB := libinit_cedric
-TARGET_RECOVERY_DEVICE_MODULES := libinit_cedric
+TARGET_INIT_VENDOR_LIB := libinit_montana
+TARGET_RECOVERY_DEVICE_MODULES := libinit_montana
 
 # Keymaster
 TARGET_PROVIDES_KEYMASTER := true
