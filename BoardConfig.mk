@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017 The LineageOS Project
+# Copyright (C) 2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
--include vendor/motorola/cedric/BoardConfigVendor.mk
+-include vendor/motorola/montana/BoardConfigVendor.mk
 
-DEVICE_PATH := device/motorola/cedric
+DEVICE_PATH := device/motorola/montana
 
 TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
 
@@ -50,7 +49,7 @@ TARGET_2ND_CPU_VARIANT := cortex-a53
 TARGET_USES_64_BIT_BINDER := true
 
 # Asserts
-TARGET_OTA_ASSERT_DEVICE := cedric,cedric_retail
+TARGET_OTA_ASSERT_DEVICE := montana,montana_retail
 
 # Enable dexpreopt to speed boot time
 ifeq ($(HOST_OS),linux)
